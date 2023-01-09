@@ -8,32 +8,35 @@ class DirGraph:
         self.weights = {}
         self.references = {}
 
-    def add_node(self, *nodes):
+    def add_node(self, *nodes: str):
         for node in nodes:
             if node not in self.nodes:
                 self.nodes.append(node)
-                self.references[node.label] = node
+                self.references[node] = Node(node)
 
-    def add_edge(self, parent, child, weight=1.0):
-        self.add_node(parent, child)
-        parent.add_child(child)
-        child.add_parent(parent)
-        self.edges.append((parent, child))
-        self.weights[(parent, child)] = weight
+    def add_edge(self, parent: str, child: str, weight=1.0):
+        p = self.references[parent]
+        c = self.references[child]
+        p.add_child(c)
+        c.add_parent(p)
+        self.edges.append((p, c))
+        self.weights[(p, c)] = weight
 
     def moralize(self):
-        for node in self.nodes:
+        for node in self.references.values():
             if len(node.parents) >= 2:
                 for i in range(len(node.parents)):
                     for j in range(i + 1, len(node.parents)):
                         if (node.parents[i], node.parents[j]) not in self.edges and (node.parents[j], node.parents[i]) \
                                 not in self.edges:
-                            self.add_edge(node.parents[i], node.parents[j])
+                            self.add_edge(node.parents[i].label, node.parents[j].label)
 
     def get_moral_graph(self):
         self.moralize()
         moral_graph = Graph.Graph()
-
+        for edge in self.edges:
+            moral_graph.add_node(edge[0].label, edge[1].label)
+            moral_graph.add_edge(edge[0].label, edge[1].label)
         return moral_graph
 
 

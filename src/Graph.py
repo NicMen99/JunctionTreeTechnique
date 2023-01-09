@@ -5,18 +5,19 @@ class Graph:
         self.weights = {}
         self.references = {}
 
-    def add_node(self, *nodes):
+    def add_node(self, *nodes: str):
         for node in nodes:
             if node not in self.nodes:
                 self.nodes.append(node)
-                self.references[node.label] = node
+                self.references[node] = Node(node)
 
-    def add_edge(self, n1, n2, weight=1.0):
-        self.add_node(n1, n2)
-        n1.add_neighbor(n2)
-        n2.add_parent(n1)
-        self.edges.append((n1, n2))
-        self.weights[(n1, n2)] = weight
+    def add_edge(self, n1: str, n2: str, weight=1.0):
+        _n1 = self.references[n1]
+        _n2 = self.references[n2]
+        _n1.add_neighbor(_n2)
+        _n2.add_neighbor(_n1)
+        self.edges.append((_n1, _n2))
+        self.weights[(_n1, _n2)] = weight
 
 
 class Node:
