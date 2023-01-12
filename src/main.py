@@ -8,7 +8,7 @@ import DirGraph as dg
 
 def vis_dgraph(grph):
     dot = graphviz.Digraph('Directed Graph')
-    for node in grph.references.keys():
+    for node in grph.ref.keys():
         dot.node(node)
     for edge in grph.edges:
         dot.edge(edge[0].label, edge[1].label)
@@ -36,4 +36,4 @@ if __name__ == '__main__':
     graph.add_edge('E', 'H')
     vis_dgraph(graph)
     m_graph = graph.get_moral_graph()
-    vis_graph(m_graph)
+    print(m_graph.has_path('A', 'H', subgraph=m_graph.subgraph(['A', 'B', 'H'])))
