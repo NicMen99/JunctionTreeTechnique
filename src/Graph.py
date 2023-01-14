@@ -22,14 +22,16 @@ class Graph:
         self.weights[(_n2, _n1)] = weight
 
     def make_chordal(self):
-        alpha = {node: 0 for node in self.nodes}
+        # alpha = {node: 0 for node in self.nodes}
         chords = set()
         weight = {node: 0 for node in self.nodes}
-        unnumbered_nodes = self.nodes
+        unnumbered_nodes = []
+        for i in self.nodes:
+            unnumbered_nodes.append(i)
         for i in range(len(self.nodes), 0, -1):
             z = max(unnumbered_nodes, key=lambda node: weight[node])
             unnumbered_nodes.remove(z)
-            alpha[z] = i
+            # alpha[z] = i
             update_nodes = []
             for y in unnumbered_nodes:
                 if (self.ref[y], self.ref[z]) in self.edges or (self.ref[z], self.ref[y]) in self.edges:
@@ -37,8 +39,13 @@ class Graph:
                 else:
                     y_weight = weight[y]
                     lower_nodes = [node for node in unnumbered_nodes if weight[node] < y_weight]
-                    if self.has_path():
-                        pass
+                    if self.has_path(y, z, subgraph=self.subgraph(lower_nodes + [y, z])):
+                        update_nodes.append(y)
+                        chords.add((z, y))
+            for node in update_nodes:
+                weight[node] += 1
+        for i in chords:
+            self.add_edge(i[0], i[1])
 
     def has_path(self, source, target, subgraph=None):
         if target == source:
@@ -115,6 +122,8 @@ class Graph:
             if edge[0] in [sub.ref[node] for node in sub.nodes] and edge[1] in [sub.ref[node] for node in sub.nodes]:
                 sub.edges.append(edge)
         return sub
+
+    # def is_chordal(self):
 
 
 class Node:

@@ -19,21 +19,25 @@ def vis_graph(grph):
     dot = graphviz.Graph('Moralized Undirected Graph')
     for node in grph.nodes:
         dot.node(node)
-    for edge in grph.edges:
+    edges = [edge for edge in grph.edges]
+    for edge in edges:
         dot.edge(edge[0].label, edge[1].label)
+        edges.remove((edge[1], edge[0]))
     dot.render(directory='../doctest-output', view=True)
 
 
 if __name__ == '__main__':
     graph = dg.DirGraph()
-    graph.add_node('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
+    graph.add_node('A', 'B', 'C', 'D', 'E', 'F')
+    graph.add_edge('A', 'B')
     graph.add_edge('A', 'C')
-    graph.add_edge('B', 'C')
-    graph.add_edge('D', 'E')
+    graph.add_edge('B', 'D')
     graph.add_edge('C', 'E')
-    graph.add_edge('C', 'F')
-    graph.add_edge('E', 'G')
-    graph.add_edge('E', 'H')
+    graph.add_edge('E', 'F')
+    graph.add_edge('D', 'F')
     vis_dgraph(graph)
-    m_graph = graph.get_moral_graph()
-    print(m_graph.has_path('A', 'H', subgraph=m_graph.subgraph(['A', 'B', 'H'])))
+    graph = graph.get_moral_graph()
+    vis_graph(graph)
+    graph.make_chordal()
+    vis_graph(graph)
+
