@@ -4,6 +4,7 @@ class Graph:
         self.edges = []
         self.weights = {}
         self.ref = {}
+        self.cliques = []
 
     def add_node(self, *nodes: str):
         for node in nodes:
@@ -123,7 +124,22 @@ class Graph:
                 sub.edges.append(edge)
         return sub
 
-    # def is_chordal(self):
+    def Bron_Kerbosch_no_pivot(self, R: list, P: list, X: list):
+        if len(P) == 0 and len(X) == 0:
+            self.cliques.append(R)
+            return
+        for v in P[:]:
+            r = R[::]
+            r.append(v)
+            p = [i for i in P if self.ref[i] in self.ref[v].neighbors]
+            x = [j for j in X if self.ref[j] in self.ref[v].neighbors]
+            self.Bron_Kerbosch_no_pivot(r, p, x)
+            P.remove(v)
+            X.append(v)
+
+    # def is_chordal(self): TODO
+
+    # TODO aggiungere metodo di triangolazione come specificato su HUGINS 4.5.3
 
 
 class Node:
