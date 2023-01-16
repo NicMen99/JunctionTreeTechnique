@@ -1,8 +1,10 @@
+from src import JunctionGraph
+
+
 class Graph:
     def __init__(self):
         self.nodes = []
         self.edges = []
-        self.weights = {}
         self.ref = {}
         self.cliques = []
 
@@ -12,15 +14,13 @@ class Graph:
                 self.nodes.append(node)
                 self.ref[node] = Node(node)
 
-    def add_edge(self, n1: str, n2: str, weight=1.0):
+    def add_edge(self, n1: str, n2: str):
         _n1 = self.ref[n1]
         _n2 = self.ref[n2]
         _n1.add_neighbor(_n2)
         _n2.add_neighbor(_n1)
         self.edges.append((_n1, _n2))
         self.edges.append((_n2, _n1))
-        self.weights[(_n1, _n2)] = weight
-        self.weights[(_n2, _n1)] = weight
 
     def make_chordal(self):
         # alpha = {node: 0 for node in self.nodes}
@@ -137,13 +137,37 @@ class Graph:
             P.remove(v)
             X.append(v)
 
+    def get_junction_graph(self):
+        g = JunctionGraph.JunctionGraph()
+        for c in self.cliques:
+            label = ''
+            for s in c:
+                label = label + s
+            g.add_node((label, 'Supernode'))
+
+        supernodes = g.nodes[:]
+        for i in range(len(supernodes)):
+            for j in range(i+1, len(supernodes)):
+                inter = [element for element in supernodes[i] if element in supernodes[j]]
+                label = ''
+                if len(inter):
+                    for k in inter:
+                        label = label + k
+                    g.add_node((label, 'Separator'))
+                    if (g.ref[label], g.ref[supernodes[i]]) not in g.edges:
+                        g.add_edge(label, supernodes[i])
+                    if (g.ref[label], g.ref[supernodes[j]]) not in g.edges:
+                        g.add_edge(label, supernodes[j])
+
+        return g
+
     # def is_chordal(self): TODO
 
     # TODO aggiungere metodo di triangolazione come specificato su HUGINS 4.5.3
 
 
 class Node:
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.label = name
         self.neighbors = []
 

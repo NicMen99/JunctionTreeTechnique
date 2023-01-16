@@ -1,6 +1,7 @@
 import graphviz
 import Graph as g
 import DirGraph as dg
+import JunctionGraph as jg
 
 # Per salvare i file da visualizzare utilizzare questa directory
 # render(directory='../doctest-output', view=True)
@@ -26,19 +27,38 @@ def vis_graph(grph, fname='Undirected Graph'):
     dot.render(directory='../doctest-output', view=True)
 
 
+def vis_jgraph(grph, fname='Junction Graph'):
+    dot = graphviz.Graph(fname)
+    for node in grph.nodes:
+        if grph.ref[node].type == 'Separator':
+            dot.node(node, _attributes={'shape': 'square'})
+        else:
+            dot.node(node)
+    edges = [edge for edge in grph.edges]
+    for edge in edges:
+        dot.edge(edge[0].label, edge[1].label)
+        edges.remove((edge[1], edge[0]))
+    dot.render(directory='../doctest-output', view=True)
+
+
 if __name__ == '__main__':
-    gr = g.Graph()
-    gr.add_node('A', 'B', 'C', 'D', 'E')
-    gr.add_edge('A', 'B')
-    gr.add_edge('A', 'C')
-    gr.add_edge('A', 'D')
-    gr.add_edge('C', 'B')
-    gr.add_edge('C', 'D')
-    gr.add_edge('C', 'E')
-    gr.add_edge('B', 'E')
-    gr.add_edge('D', 'E')
-    vis_graph(gr)
-    gr.make_chordal()
-    vis_graph(gr, 'Triangular')
-    gr.Bron_Kerbosch_no_pivot([], gr.nodes, [])
-    print("debug")
+    dg = dg.DirGraph()
+    dg.add_node('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')
+    dg.add_edge('A', 'B')
+    dg.add_edge('A', 'C')
+    dg.add_edge('A', 'D')
+    dg.add_edge('B', 'E')
+    dg.add_edge('C', 'F')
+    dg.add_edge('D', 'G')
+    dg.add_edge('E', 'H')
+    dg.add_edge('F', 'H')
+    dg.add_edge('F', 'I')
+    dg.add_edge('G', 'I')
+    vis_dgraph(dg, 'Starting Graph')
+    mg = dg.get_moral_graph()
+    vis_graph(mg, 'Moralized')
+    mg.make_chordal()
+    vis_graph(mg, 'Triangulated')
+    mg.Bron_Kerbosch_no_pivot([], mg.nodes, [])
+    jg = mg.get_junction_graph()
+    vis_jgraph(jg, 'Junction')

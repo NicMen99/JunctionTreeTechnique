@@ -5,7 +5,6 @@ class DirGraph:
     def __init__(self):
         self.nodes = []
         self.edges = []
-        self.weights = {}
         self.ref = {}
 
     def add_node(self, *nodes: str):
@@ -14,13 +13,12 @@ class DirGraph:
                 self.nodes.append(node)
                 self.ref[node] = Node(node)
 
-    def add_edge(self, parent: str, child: str, weight=1.0):
+    def add_edge(self, parent: str, child: str):
         p = self.ref[parent]
         c = self.ref[child]
         p.add_child(c)
         c.add_parent(p)
         self.edges.append((p, c))
-        self.weights[(p, c)] = weight
 
     def moralize(self):
         for node in self.ref.values():
@@ -41,7 +39,7 @@ class DirGraph:
 
 
 class Node:
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.label = name
         self.parents = []
         self.children = []
