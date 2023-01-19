@@ -62,3 +62,5 @@ if __name__ == '__main__':
     mg.Bron_Kerbosch_no_pivot([], mg.nodes, [])
     jg = mg.get_junction_graph()
     vis_jgraph(jg, 'Junction')
+    jt = jg.get_maximal_weight_spanning_tree()
+    vis_jgraph(jt, 'Junction Tree')
