@@ -1,7 +1,5 @@
 import graphviz
-import Graph as g
 import DirGraph as dg
-import JunctionGraph as jg
 
 # Per salvare i file da visualizzare utilizzare questa directory
 # render(directory='../doctest-output', view=True)
@@ -58,8 +56,9 @@ if __name__ == '__main__':
     mg = dg.get_moral_graph()
     vis_graph(mg, 'Moralized')
     mg.make_chordal()
+    # mg.elimination_game()
     vis_graph(mg, 'Triangulated')
-    mg.Bron_Kerbosch_no_pivot([], mg.nodes, [])
+    mg.Bron_Kerbosch_no_pivot([], mg.nodes[:], [])
     jg = mg.get_junction_graph()
     vis_jgraph(jg, 'Junction')
     jt = jg.get_maximal_weight_spanning_tree()

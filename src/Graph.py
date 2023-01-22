@@ -22,8 +22,33 @@ class Graph:
         self.edges.append((_n1, _n2))
         self.edges.append((_n2, _n1))
 
-    def make_chordal(self):
-        # alpha = {node: 0 for node in self.nodes}
+    def elimination_game(self):
+        def remove_node(G, n):
+            for node in G.ref[n].neighbors:
+                node.neighbors.remove(G.ref[n])
+            del G.ref[n]
+
+        g = Graph()
+        for edge in self.edges:
+            g.add_node(edge[0].label, edge[1].label)
+            if (g.ref[edge[0].label], g.ref[edge[1].label]) not in g.edges:
+                g.add_edge(edge[0].label, edge[1].label)
+        chords = set()
+
+        for i in range(len(g.nodes)):
+            nominee = g.ref[g.nodes.pop()]
+            if len(nominee.neighbors) >= 2:
+                for j in range(len(nominee.neighbors)):
+                    for k in range(j + 1, len(nominee.neighbors)):
+                        if nominee.neighbors[j] not in nominee.neighbors[k].neighbors:
+                            chords.add((nominee.neighbors[j].label, nominee.neighbors[k].label))
+                            g.add_edge(nominee.neighbors[j].label, nominee.neighbors[k].label)
+            remove_node(g, nominee.label)
+
+        for edge in chords:
+            self.add_edge(edge[0], edge[1])
+
+    def make_chordal(self):  # MCS-M
         chords = set()
         weight = {node: 0 for node in self.nodes}
         unnumbered_nodes = []
@@ -32,10 +57,9 @@ class Graph:
         for i in range(len(self.nodes), 0, -1):
             z = max(unnumbered_nodes, key=lambda node: weight[node])
             unnumbered_nodes.remove(z)
-            # alpha[z] = i
             update_nodes = []
             for y in unnumbered_nodes:
-                if (self.ref[y], self.ref[z]) in self.edges or (self.ref[z], self.ref[y]) in self.edges:
+                if self.ref[y] in self.ref[z].neighbors:
                     update_nodes.append(y)
                 else:
                     y_weight = weight[y]
@@ -119,9 +143,6 @@ class Graph:
         for node in self.nodes:
             if node in nodes:
                 sub.ref[node] = self.ref[node]
-        for edge in self.edges:
-            if edge[0] in [sub.ref[node] for node in sub.nodes] and edge[1] in [sub.ref[node] for node in sub.nodes]:
-                sub.edges.append(edge)
         return sub
 
     def Bron_Kerbosch_no_pivot(self, R: list, P: list, X: list):
@@ -160,10 +181,6 @@ class Graph:
                         g.add_edge(label, supernodes[j])
 
         return g
-
-    # def is_chordal(self): TODO
-
-    # TODO aggiungere metodo di triangolazione come specificato su HUGINS 4.5.3
 
 
 class Node:
