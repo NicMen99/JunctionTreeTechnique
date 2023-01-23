@@ -175,11 +175,7 @@ class Graph:
                     for k in inter:
                         label = label + k
                     g.add_node((label, 'Separator'))
-                    if (g.ref[label], g.ref[supernodes[i]]) not in g.edges:
-                        g.add_edge(label, supernodes[i])
-                    if (g.ref[label], g.ref[supernodes[j]]) not in g.edges:
-                        g.add_edge(label, supernodes[j])
-
+                    g.add_labeled_edge(supernodes[i], supernodes[j], label)
         return g
 
 
