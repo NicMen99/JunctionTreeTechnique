@@ -1,5 +1,6 @@
 import graphviz
 import DirGraph as dg
+import json
 
 # Per salvare i file da visualizzare utilizzare questa directory
 # render(directory='../doctest-output', view=True)
@@ -40,18 +41,10 @@ def vis_jgraph(grph, fname='Junction Graph'):
 
 
 if __name__ == '__main__':
+    f = open('setup.json')
+    j = json.load(f)["medium"]
     dg = dg.DirGraph()
-    dg.add_node('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')
-    dg.add_edge('A', 'B')
-    dg.add_edge('A', 'C')
-    dg.add_edge('A', 'D')
-    dg.add_edge('B', 'E')
-    dg.add_edge('C', 'F')
-    dg.add_edge('D', 'G')
-    dg.add_edge('E', 'H')
-    dg.add_edge('F', 'H')
-    dg.add_edge('F', 'I')
-    dg.add_edge('G', 'I')
+    dg.parseFromJson(j)
     vis_dgraph(dg, 'Starting Graph')
     mg = dg.get_moral_graph()
     vis_graph(mg, 'Moralized')

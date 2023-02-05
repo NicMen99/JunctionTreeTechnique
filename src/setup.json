@@ -1,0 +1,28 @@
+{
+  "test": {
+      "nodes": [
+        "A", "B", "C", "D", "E", "F", "G", "H", "I"
+      ],
+      "arcs": [
+        "A-B", "A-C", "A-D", "B-E", "C-F", "D-G", "E-H", "F-H", "F-I", "G-I"
+      ]
+    },
+  "small":{
+      "nodes": [
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"
+      ],
+      "arcs": [
+        "A-B", "A-C", "B-D", "C-E", "D-F", "E-F", "G-C", "G-E", "C-K", "G-H", "H-I", "K-I", "E-J", "I-J"
+      ]
+    },
+  "medium": {
+    "nodes": [
+      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+      "V", "W", "X", "Y", "Z", "a", "b", "c"
+    ],
+    "arcs": [
+      "A-B", "C-B", "B-E", "D-E", "F-E", "G-F", "H-F", "E-I", "J-I", "K-I", "L-I", "I-M", "N-M", "M-O", "M-P",
+      "Q-P", "R-P", "S-R", "T-R", "U-P", "V-U", "W-U", "X-P", "Y-X", "Z-X", "a-P", "b-a", "c-a"
+    ]
+  }
+}
