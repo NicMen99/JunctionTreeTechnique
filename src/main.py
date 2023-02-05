@@ -45,8 +45,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Costruisce il Junction Tree di una Bayes Network')
     parser.add_argument(
-        '--bName', metavar='bName', nargs=1, type=str,
-        help='Bayes Network da selezionare (test, small o medium)')
+        'bName', metavar='bName', nargs=1, type=str,
+        help='Bayes Network da selezionare (test, small o medium)'
+    )
+    parser.add_argument(
+        '--minTriang',
+        help='Selezionare se usare l\'algoritmo di triangolazione minimale o meno (default: true)', action='store_false'
+    )
     args = parser.parse_args()
     f = open('setup.json')
     j = json.load(f)[args.bName[0]]
@@ -55,8 +60,10 @@ if __name__ == '__main__':
     vis_dgraph(dg, 'Starting Graph')
     mg = dg.get_moral_graph()
     vis_graph(mg, 'Moralized')
-    mg.make_chordal()
-    # mg.elimination_game()
+    if args.minTriang:
+        mg.make_chordal()
+    else:
+        mg.elimination_game()
     vis_graph(mg, 'Triangulated')
     mg.Bron_Kerbosch_no_pivot([], mg.nodes[:], [])
     jg = mg.get_junction_graph()
