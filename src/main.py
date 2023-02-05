@@ -1,6 +1,7 @@
 import graphviz
 import DirGraph as dg
 import json
+import argparse
 
 # Per salvare i file da visualizzare utilizzare questa directory
 # render(directory='../doctest-output', view=True)
@@ -41,8 +42,14 @@ def vis_jgraph(grph, fname='Junction Graph'):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Costruisce il Junction Tree di una Bayes Network')
+    parser.add_argument(
+        '--bName', metavar='bName', nargs=1, type=str,
+        help='Bayes Network da selezionare (test, small o medium)')
+    args = parser.parse_args()
     f = open('setup.json')
-    j = json.load(f)["medium"]
+    j = json.load(f)[args.bName[0]]
     dg = dg.DirGraph()
     dg.parseFromJson(j)
     vis_dgraph(dg, 'Starting Graph')
